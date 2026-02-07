@@ -6,7 +6,12 @@ import { useRouter } from 'next/navigation';
 type PaymentMethod = 'bank_transfer' | 'kakaopay';
 type AmountType = 'free' | 'fixed';
 
-const FIXED_AMOUNTS = [10000, 30000, 50000, 100000, 0];
+const FIXED_AMOUNTS = [
+  { value: 10000, label: '1만' },
+  { value: 30000, label: '3만' },
+  { value: 50000, label: '5만' },
+  { value: 100000, label: '10만' },
+];
 
 export function DonationForm() {
   const router = useRouter();
@@ -18,8 +23,6 @@ export function DonationForm() {
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
-    lecture_title: '',
-    lecture_description: '',
     name: '',
     phone: '',
     email: '',
@@ -55,6 +58,7 @@ export function DonationForm() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             ...formData,
+            lecture_title: '에코행복연구소 자유후원',
             amount: finalAmount,
             receipt_required: receiptRequired,
             resident_number_prefix: receiptRequired ? formData.resident_number_prefix : undefined,
@@ -69,6 +73,7 @@ export function DonationForm() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             ...formData,
+            lecture_title: '에코행복연구소 자유후원',
             amount: finalAmount,
             receipt_required: receiptRequired,
             resident_number_prefix: receiptRequired ? formData.resident_number_prefix : undefined,
@@ -91,99 +96,78 @@ export function DonationForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* 강의 정보 */}
-      <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h2 className="font-semibold text-slate-800 mb-4">강의 정보</h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">강의 제목</label>
-            <input
-              type="text"
-              required
-              value={formData.lecture_title}
-              onChange={(e) => setFormData({ ...formData, lecture_title: e.target.value })}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="예: 2025년 1월 심리학 강의"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">강의 설명 (선택)</label>
-            <textarea
-              value={formData.lecture_description}
-              onChange={(e) => setFormData({ ...formData, lecture_description: e.target.value })}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              rows={3}
-              placeholder="강의에 대한 간단한 설명"
-            />
-          </div>
-        </div>
-      </section>
-
+    <form onSubmit={handleSubmit} className="space-y-5 animate-fade-in">
       {/* 금액 */}
-      <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h2 className="font-semibold text-slate-800 mb-4">기부 금액</h2>
-        <div className="flex gap-4 mb-4">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="amountType"
-              checked={amountType === 'fixed'}
-              onChange={() => setAmountType('fixed')}
-            />
-            <span>고정 금액</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="amountType"
-              checked={amountType === 'free'}
-              onChange={() => setAmountType('free')}
-            />
-            <span>자유 금액</span>
-          </label>
+      <section className="rounded-2xl bg-white p-5 shadow-card sm:p-6">
+        <h2 className="mb-4 text-base font-semibold text-stone-800">기부 금액</h2>
+        <div className="mb-4 flex gap-2 rounded-xl bg-stone-100 p-1">
+          <button
+            type="button"
+            onClick={() => setAmountType('fixed')}
+            className={`flex-1 rounded-lg py-3 text-sm font-medium transition-all ${
+              amountType === 'fixed'
+                ? 'bg-white text-emerald-600 shadow-sm'
+                : 'text-stone-500'
+            }`}
+          >
+            선택
+          </button>
+          <button
+            type="button"
+            onClick={() => setAmountType('free')}
+            className={`flex-1 rounded-lg py-3 text-sm font-medium transition-all ${
+              amountType === 'free'
+                ? 'bg-white text-emerald-600 shadow-sm'
+                : 'text-stone-500'
+            }`}
+          >
+            직접입력
+          </button>
         </div>
         {amountType === 'fixed' ? (
-          <div className="flex flex-wrap gap-2">
-            {FIXED_AMOUNTS.filter(Boolean).map((amt) => (
+          <div className="grid grid-cols-4 gap-2">
+            {FIXED_AMOUNTS.map(({ value, label }) => (
               <button
-                key={amt}
+                key={value}
                 type="button"
-                onClick={() => setAmount(amt)}
-                className={`px-4 py-2 rounded-lg border transition ${
-                  amount === amt
-                    ? 'bg-emerald-500 text-white border-emerald-500'
-                    : 'bg-white border-slate-300 hover:border-emerald-400'
+                onClick={() => setAmount(value)}
+                className={`min-h-[52px] rounded-xl text-sm font-semibold transition-all active:scale-[0.98] ${
+                  amount === value
+                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
                 }`}
               >
-                {amt.toLocaleString()}원
+                {label}원
               </button>
             ))}
           </div>
         ) : (
-          <div>
+          <div className="relative">
             <input
               type="number"
               min={1000}
               step={1000}
               value={amount || ''}
               onChange={(e) => setAmount(Number(e.target.value) || 0)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg"
+              className="w-full rounded-xl border-2 border-stone-200 bg-stone-50 px-4 py-4 text-lg font-semibold outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/20"
               placeholder="금액 입력"
             />
+            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-stone-400">
+              원
+            </span>
           </div>
         )}
       </section>
 
       {/* 결제 방식 */}
-      <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h2 className="font-semibold text-slate-800 mb-4">결제 방식</h2>
-        <div className="grid grid-cols-2 gap-4">
+      <section className="rounded-2xl bg-white p-5 shadow-card sm:p-6">
+        <h2 className="mb-4 text-base font-semibold text-stone-800">결제 방식</h2>
+        <div className="grid grid-cols-2 gap-3">
           <label
-            className={`flex flex-col items-center p-4 rounded-xl border-2 cursor-pointer transition ${
+            className={`flex min-h-[100px] flex-col items-center justify-center gap-2 rounded-2xl border-2 transition-all active:scale-[0.98] ${
               paymentMethod === 'bank_transfer'
-                ? 'border-emerald-500 bg-emerald-50'
-                : 'border-slate-200 hover:border-slate-300'
+                ? 'border-emerald-500 bg-emerald-50/50 shadow-inner'
+                : 'border-stone-200 bg-stone-50/50'
             }`}
           >
             <input
@@ -194,15 +178,15 @@ export function DonationForm() {
               onChange={() => setPaymentMethod('bank_transfer')}
               className="sr-only"
             />
-            <span className="text-2xl mb-2">🏦</span>
-            <span className="font-medium">무통장입금</span>
-            <span className="text-xs text-slate-500 mt-1">수수료 0원</span>
+            <span className="text-3xl">🏦</span>
+            <span className="font-semibold text-stone-800">무통장입금</span>
+            <span className="text-xs text-stone-500">수수료 0원</span>
           </label>
           <label
-            className={`flex flex-col items-center p-4 rounded-xl border-2 cursor-pointer transition ${
+            className={`flex min-h-[100px] flex-col items-center justify-center gap-2 rounded-2xl border-2 transition-all active:scale-[0.98] ${
               paymentMethod === 'kakaopay'
-                ? 'border-yellow-400 bg-yellow-50'
-                : 'border-slate-200 hover:border-slate-300'
+                ? 'border-amber-400 bg-amber-50/50 shadow-inner'
+                : 'border-stone-200 bg-stone-50/50'
             }`}
           >
             <input
@@ -213,47 +197,47 @@ export function DonationForm() {
               onChange={() => setPaymentMethod('kakaopay')}
               className="sr-only"
             />
-            <span className="text-2xl mb-2">💛</span>
-            <span className="font-medium">카카오페이</span>
-            <span className="text-xs text-slate-500 mt-1">즉시 결제</span>
+            <span className="text-3xl">💛</span>
+            <span className="font-semibold text-stone-800">카카오페이</span>
+            <span className="text-xs text-stone-500">즉시 결제</span>
           </label>
         </div>
       </section>
 
       {/* 기부자 정보 */}
-      <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h2 className="font-semibold text-slate-800 mb-4">기부자 정보</h2>
+      <section className="rounded-2xl bg-white p-5 shadow-card sm:p-6">
+        <h2 className="mb-4 text-base font-semibold text-stone-800">기부자 정보</h2>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">이름 *</label>
+            <label className="mb-1.5 block text-sm font-medium text-stone-600">이름</label>
             <input
               type="text"
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-xl border-2 border-stone-200 bg-stone-50 px-4 py-3.5 outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/20"
               placeholder="홍길동"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">연락처 *</label>
+            <label className="mb-1.5 block text-sm font-medium text-stone-600">연락처</label>
             <input
               type="tel"
               required
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-xl border-2 border-stone-200 bg-stone-50 px-4 py-3.5 outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/20"
               placeholder="010-1234-5678"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1">이메일 *</label>
+            <label className="mb-1.5 block text-sm font-medium text-stone-600">이메일</label>
             <input
               type="email"
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-xl border-2 border-stone-200 bg-stone-50 px-4 py-3.5 outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-4 focus:ring-emerald-500/20"
               placeholder="example@email.com"
             />
           </div>
@@ -261,19 +245,20 @@ export function DonationForm() {
       </section>
 
       {/* 영수증 */}
-      <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <label className="flex items-center gap-2 cursor-pointer mb-4">
+      <section className="rounded-2xl bg-white p-5 shadow-card sm:p-6">
+        <label className="flex min-h-[48px] cursor-pointer items-center gap-3 rounded-xl border-2 border-stone-200 bg-stone-50/50 px-4 transition hover:bg-stone-100/50 has-[:checked]:border-emerald-400 has-[:checked]:bg-emerald-50/50">
           <input
             type="checkbox"
             checked={receiptRequired}
             onChange={(e) => setReceiptRequired(e.target.checked)}
+            className="h-5 w-5 rounded border-stone-300 text-emerald-500 focus:ring-emerald-500"
           />
-          <span className="font-medium">기부금 영수증 발급 필요</span>
+          <span className="font-medium text-stone-700">기부금 영수증 발급 필요</span>
         </label>
         {receiptRequired && (
-          <div className="mt-4 p-4 bg-slate-50 rounded-lg">
-            <label className="block text-sm font-medium text-slate-600 mb-1">
-              주민번호 앞 7자리 *
+          <div className="mt-4 animate-slide-up rounded-xl bg-stone-50 p-4">
+            <label className="mb-2 block text-sm font-medium text-stone-600">
+              주민번호 앞 7자리
             </label>
             <input
               type="text"
@@ -285,29 +270,42 @@ export function DonationForm() {
                   resident_number_prefix: e.target.value.replace(/\D/g, ''),
                 })
               }
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg"
+              className="w-full rounded-xl border-2 border-stone-200 bg-white px-4 py-3 outline-none focus:border-emerald-400"
               placeholder="9001011"
             />
-            <p className="text-xs text-slate-500 mt-1">예: 9001011 (생년월일 + 성별코드)</p>
+            <p className="mt-1.5 text-xs text-stone-500">예: 9001011 (생년월일 + 성별코드)</p>
           </div>
         )}
       </section>
 
       {error && (
-        <div className="p-4 bg-red-50 text-red-600 rounded-lg">{error}</div>
+        <div className="rounded-xl bg-red-50 p-4 text-sm font-medium text-red-600">
+          {error}
+        </div>
       )}
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-4 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+        className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-10 flex min-h-[56px] items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 py-4 font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all hover:from-emerald-600 hover:to-teal-600 active:scale-[0.98] disabled:opacity-60 sm:static sm:inset-auto sm:mx-0 sm:mb-0 sm:mt-2 sm:min-h-[56px]"
       >
-        {loading
-          ? '처리 중...'
-          : paymentMethod === 'bank_transfer'
-                ? '입금 신청하기'
-                : '카카오페이로 결제하기'}
+        {loading ? (
+          <span className="flex items-center gap-2">
+            <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            처리 중...
+          </span>
+        ) : paymentMethod === 'bank_transfer' ? (
+          '입금 신청하기'
+        ) : (
+          '카카오페이로 결제하기'
+        )}
       </button>
+
+      {/* Spacer for fixed button on mobile */}
+      <div className="h-20 sm:hidden" />
     </form>
   );
 }

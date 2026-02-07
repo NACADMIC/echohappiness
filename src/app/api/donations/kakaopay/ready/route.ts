@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
         cid,
         partner_order_id: donation.kakaopay_order_id,
         partner_user_id: donation.id,
-        item_name: `[심리연구소] ${lecture_title} 기부금`,
+        item_name: `[에코행복연구소 자유후원] ${lecture_title}`,
         quantity: 1,
         total_amount: Number(amount),
         tax_free_amount: 0,

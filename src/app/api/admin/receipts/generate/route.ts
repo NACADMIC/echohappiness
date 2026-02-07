@@ -13,7 +13,7 @@ function getSupabase(): SupabaseClient {
   return createClient(url, key);
 }
 
-const ORG_NAME = process.env.ORG_NAME || '심리연구소';
+const ORG_NAME = process.env.ORG_NAME || '에코행복연구소 자유후원';
 const ORG_UNIQUE_NUMBER = process.env.ORG_UNIQUE_NUMBER || '';
 
 async function generateReceiptPDF(donation: {
@@ -133,7 +133,7 @@ export async function GET(req: NextRequest) {
       await resend.emails.send({
         from: process.env.EMAIL_FROM || 'donation@resend.dev',
         to: donation.email,
-        subject: `[심리연구소] 기부금 영수증`,
+        subject: `[에코행복연구소 자유후원] 영수증`,
         attachments: [
           {
             filename: `receipt_${donation.name}.pdf`,

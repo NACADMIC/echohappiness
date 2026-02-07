@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 cd /d "%~dp0"
 set "REPO=%~dp0"
 set "REPO=%REPO:~0,-1%"
@@ -30,14 +31,30 @@ if exist "%REPO%\.git\index.lock" (
     del "%REPO%\.git\index.lock"
 )
 
-echo Git Push - donation folder only...
+git -C "%REPO%" remote get-url origin >nul 2>nul
+if errorlevel 1 (
+    echo [Remote not set] Add GitHub repo URL.
+    echo Example: https://github.com/username/donation.git
+    echo.
+    set /p url="Repo URL: "
+    if "!url!"=="" (
+        echo Canceled.
+        pause
+        exit /b 1
+    )
+    git -C "%REPO%" remote add origin "!url!"
+    echo Remote added.
+    echo.
+)
+
+echo Git Push...
 git -C "%REPO%" add .
 git -C "%REPO%" status
 echo.
 set /p msg="Commit message: "
 if "%msg%"=="" set msg=update
 git -C "%REPO%" commit -m "%msg%"
-git -C "%REPO%" push
+git -C "%REPO%" push -u origin master
 echo.
 echo Done.
 pause

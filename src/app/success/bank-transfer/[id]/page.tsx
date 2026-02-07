@@ -26,10 +26,10 @@ export default async function BankTransferSuccessPage({
 
   if (error || !donation) {
     return (
-      <main className="min-h-screen flex items-center justify-center p-4">
-        <div className="text-center">
+      <main className="flex min-h-screen items-center justify-center bg-stone-50 p-4">
+        <div className="max-w-md rounded-2xl bg-white p-8 text-center shadow-card">
           <p className="text-red-600">입금 신청 정보를 찾을 수 없습니다.</p>
-          <Link href="/" className="mt-4 inline-block text-emerald-600 underline">
+          <Link href="/" className="mt-6 inline-block rounded-xl bg-emerald-500 px-6 py-3 font-medium text-white">
             홈으로
           </Link>
         </div>
@@ -39,52 +39,52 @@ export default async function BankTransferSuccessPage({
 
   const bankName = process.env.BANK_NAME || 'OO은행';
   const bankAccount = process.env.BANK_ACCOUNT || '123-456-789012';
-  const accountHolder = process.env.ACCOUNT_HOLDER || '심리연구소';
+  const accountHolder = process.env.ACCOUNT_HOLDER || '에코행복연구소 자유후원';
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center p-4">
-      <div className="max-w-lg w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-3xl">✅</span>
+    <main className="min-h-screen bg-gradient-to-b from-emerald-50/80 to-white p-4 pb-8">
+      <div className="mx-auto max-w-md">
+        <div className="rounded-2xl bg-white p-6 shadow-card sm:p-8">
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
+              <span className="text-4xl">✅</span>
+            </div>
+            <h1 className="text-xl font-bold text-stone-800">입금 신청이 완료되었습니다</h1>
+            <p className="mt-2 text-stone-600">
+              아래 계좌로 입금해 주시면 확인 후 이메일로 연락드리겠습니다.
+            </p>
           </div>
-          <h1 className="text-xl font-bold text-slate-800">입금 신청이 완료되었습니다</h1>
-          <p className="text-slate-600 mt-2">
-            아래 계좌로 입금해 주시면 확인 후 이메일로 연락드리겠습니다.
+
+          <div className="space-y-4 rounded-2xl bg-stone-50 p-5">
+            <div>
+              <span className="text-xs font-medium text-stone-500">입금 계좌</span>
+              <p className="mt-1 font-semibold text-stone-800">{bankName} {bankAccount}</p>
+              <p className="text-sm text-stone-600">{accountHolder}</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium text-stone-500">입금 금액</span>
+              <p className="mt-1 text-xl font-bold text-emerald-600">{donation.amount.toLocaleString()}원</p>
+            </div>
+            <div>
+              <span className="text-xs font-medium text-stone-500">입금자명 (필수)</span>
+              <p className="mt-2 rounded-xl bg-white px-4 py-3 font-mono text-lg font-semibold text-emerald-600 shadow-inner">
+                {donation.deposit_name_format}
+              </p>
+              <p className="mt-1.5 text-xs text-stone-500">예: 홍길동1234 (이름 + 연락처 끝 4자리)</p>
+            </div>
+          </div>
+
+          <p className="mt-6 text-center text-sm text-stone-600">
+            입금 확인 후 <strong>{donation.email}</strong>로 확인 이메일이 발송됩니다.
           </p>
+
+          <Link
+            href="/"
+            className="mt-8 flex min-h-[52px] items-center justify-center rounded-2xl bg-stone-100 font-semibold text-stone-700 transition hover:bg-stone-200 active:scale-[0.98]"
+          >
+            홈으로
+          </Link>
         </div>
-
-        <div className="space-y-4 p-4 bg-slate-50 rounded-xl">
-          <div>
-            <span className="text-sm text-slate-500">입금 계좌</span>
-            <p className="font-semibold">{bankName} {bankAccount}</p>
-            <p className="text-sm text-slate-600">{accountHolder}</p>
-          </div>
-          <div>
-            <span className="text-sm text-slate-500">입금 금액</span>
-            <p className="font-semibold text-lg">{donation.amount.toLocaleString()}원</p>
-          </div>
-          <div>
-            <span className="text-sm text-slate-500">입금자명 (필수)</span>
-            <p className="font-mono font-semibold text-emerald-600 bg-white px-3 py-2 rounded border">
-              {donation.deposit_name_format}
-            </p>
-            <p className="text-xs text-slate-500 mt-1">
-              예: 홍길동1234 (이름 + 연락처 끝 4자리)
-            </p>
-          </div>
-        </div>
-
-        <p className="mt-6 text-sm text-slate-600 text-center">
-          입금 확인 후 {donation.email}로 확인 이메일이 발송됩니다.
-        </p>
-
-        <Link
-          href="/"
-          className="mt-8 block w-full py-3 text-center bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition"
-        >
-          홈으로
-        </Link>
       </div>
     </main>
   );

@@ -1,24 +1,19 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+const notoSans = Noto_Sans_KR({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-pretendard",
 });
 
 export const metadata: Metadata = {
-  title: "강의 기부금 결제 | 심리연구소",
-  description: "비영리단체 심리연구소 강의 기부금 결제 - 무통장입금·카카오페이 지원",
+  title: "에코행복연구소 자유후원",
+  description: "에코행복연구소 자유후원 - 비영리단체 기부금 결제 - 무통장입금·카카오페이 지원",
   openGraph: {
-    title: "강의 기부금 결제 | 심리연구소",
-    description: "비영리단체 심리연구소 강의 기부금 결제",
+    title: "에코행복연구소 자유후원",
+    description: "에코행복연구소 자유후원 - 비영리단체 기부금 결제",
     type: "website",
   },
 };
@@ -30,9 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${notoSans.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

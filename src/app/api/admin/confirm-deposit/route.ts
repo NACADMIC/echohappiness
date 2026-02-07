@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       await resend.emails.send({
         from: process.env.EMAIL_FROM || 'donation@resend.dev',
         to: donation.email,
-        subject: `[심리연구소] 기부금 입금 확인 - ${donation.amount.toLocaleString()}원`,
+        subject: `[에코행복연구소 자유후원] 입금 확인 - ${donation.amount.toLocaleString()}원`,
         html: `
           <h2>입금이 확인되었습니다</h2>
           <p>${donation.name}님, 감사합니다.</p>
