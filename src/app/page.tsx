@@ -19,7 +19,7 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-md text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-medium text-emerald-700">
             <span className="text-lg">🌱</span>
-            비영리단체
+            사단법인
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-stone-800 sm:text-3xl">
             에코행복연구소

@@ -10,10 +10,10 @@ const notoSans = Noto_Sans_KR({
 
 export const metadata: Metadata = {
   title: "에코행복연구소 자유후원",
-  description: "에코행복연구소 자유후원 - 비영리단체 기부금 결제 - 무통장입금·카카오페이 지원",
+  description: "에코행복연구소 자유후원 - 사단법인 기부금 결제 - 무통장입금·카카오페이 지원",
   openGraph: {
     title: "에코행복연구소 자유후원",
-    description: "에코행복연구소 자유후원 - 비영리단체 기부금 결제",
+    description: "에코행복연구소 자유후원 - 사단법인 기부금 결제",
     type: "website",
   },
 };
